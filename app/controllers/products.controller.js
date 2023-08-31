@@ -4,7 +4,7 @@ const ModelProduct = require("../models/products.mode");
 const getProducts = async (req, res) => {
 	const products = await ModelProduct.find();
 	try {
-		res.send({ data: products.length });
+		res.send({ data: products });
 	} catch (error) {
 		console.log(error);
 	}
@@ -15,12 +15,28 @@ const getColorCategory = async (req, res) => {
 		const products = await ModelProduct.find({ subCategory: category });
 		const dirtyColorList = products.map((el) => el.color);
 		const cleanList = removeElemtnsRepeted(dirtyColorList);
-
+		console.log({ cleanList });
 		res.send({ data: cleanList });
 	} catch (error) {
 		console.log(error);
 	}
 };
+const getColorsToFilter = async (req, res) => {
+	const { categories } = req.body;
+	try {
+		const products = await ModelProduct.find()
+			.where(
+				"category",
+				categories.map((el) => el.toLocaleUpperCase()),
+			)
+			.select(["color", "-_id"]);
+		const cleanList = removeElemtnsRepeted(products);
+		res.send({ data: cleanList });
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const deleteAllProducts = async (req, res) => {
 	try {
 		await ModelProduct.deleteMany()
@@ -68,6 +84,7 @@ module.exports = {
 	addVaroiusProducts,
 	deleteAllProducts,
 	getColorCategory,
+	getColorsToFilter,
 };
 /* module.exports = addProduct;
  */
