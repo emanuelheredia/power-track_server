@@ -46,9 +46,13 @@ const getColorsToFilter = async (req, res) => {
 };
 const getImagesOfSubCategories = async (req, res) => {
 	const { subCategory, color } = req.body;
+	const query = {
+		subCategory: subCategory,
+	};
+	if (color) query.color = color;
 	try {
 		const products = await ModelProduct.findOne()
-			.where({ color: color, subCategory: subCategory })
+			.where(query)
 			.select(["images", "-_id"]);
 		res.send({ data: products.images });
 	} catch (error) {
@@ -57,14 +61,15 @@ const getImagesOfSubCategories = async (req, res) => {
 };
 const updateImagesSubCategory = async (req, res) => {
 	const { subCategory, color, newImages } = req.body;
+	const query = {
+		subCategory: subCategory,
+	};
+	if (color) query.color = color;
+
 	try {
-		const respuesta = await ModelProduct.updateMany(
-			{
-				subCategory: subCategory,
-				color: color,
-			},
-			{ images: newImages },
-		);
+		const respuesta = await ModelProduct.updateMany(query, {
+			images: newImages,
+		});
 		if (respuesta.acknowledged == true) {
 			res.send({ msg: "La actualización fue exitosa" });
 		} else {
