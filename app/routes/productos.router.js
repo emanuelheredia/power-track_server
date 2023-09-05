@@ -9,11 +9,13 @@ const {
 	getColorsToFilter,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
+	updateBachProducts,
 } = require("../controllers/products.controller.js");
 
 router.get("/products", getProducts);
 router.post("/imagesOfSubcategory", getImagesOfSubCategories);
 router.post("/update-subCategoryImages", updateImagesSubCategory);
+router.post("/update-products", updateBachProducts);
 router.post("/color-category", getColorCategory);
 router.post("/color-filter-values", getColorsToFilter);
 router.post("/products", addVaroiusProducts);

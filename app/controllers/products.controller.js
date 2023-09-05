@@ -59,6 +59,50 @@ const getImagesOfSubCategories = async (req, res) => {
 		console.log(error);
 	}
 };
+const updateBachProducts = async (req, res) => {
+	const products = req.body;
+	try {
+		let respPromises = products.map((product) => {
+			return ModelProduct.updateMany(
+				{ code: product.code },
+				{
+					price: product.price,
+				},
+			);
+		});
+		const succesUpdates = await Promise.all(respPromises).then((datos) =>
+			datos
+				.map((resp) => {
+					if (resp.acknowledged && resp.matchedCount === 1) {
+						return 1;
+					} else return 0;
+				})
+				.reduce((a, b) => a + b, 0),
+		);
+		if (succesUpdates === 0) {
+			res.status(401).json({ msg: "Error en  la actualización" });
+		}
+		if (succesUpdates > 0 && succesUpdates !== products.length) {
+			res.send({
+				msg:
+					"Algunos precios no lograron actualizarse. " +
+					succesUpdates +
+					" productos actualizados de " +
+					products.length,
+			});
+		}
+		if (succesUpdates === products.length)
+			res.status(200).json({
+				msg:
+					"La actualización se completó con exito. Se han actualizado " +
+					succesUpdates +
+					" productos",
+			});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const updateImagesSubCategory = async (req, res) => {
 	const { subCategory, color, newImages } = req.body;
 	const query = {
@@ -130,6 +174,7 @@ module.exports = {
 	getColorsToFilter,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
+	updateBachProducts,
 };
 /* module.exports = addProduct;
  */
