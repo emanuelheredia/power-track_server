@@ -72,10 +72,13 @@ const updateBachProducts = async (req, res) => {
 		});
 		const succesUpdates = await Promise.all(respPromises).then((datos) =>
 			datos
-				.map((resp) => {
-					if (resp.acknowledged && resp.matchedCount === 1) {
+				.map((resp, index) => {
+					if (resp.acknowledged && resp.matchedCount >= 1) {
 						return 1;
-					} else return 0;
+					} else {
+						console.log(index);
+						return 0;
+					}
 				})
 				.reduce((a, b) => a + b, 0),
 		);
@@ -94,7 +97,7 @@ const updateBachProducts = async (req, res) => {
 		if (succesUpdates === products.length)
 			res.status(200).json({
 				msg:
-					"La actualización se completó con exito. Se han actualizado " +
+					"La actualización se completó con éxito. Se han actualizado " +
 					succesUpdates +
 					" productos",
 			});
