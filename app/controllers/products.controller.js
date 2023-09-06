@@ -23,7 +23,7 @@ const getColorCategory = async (req, res) => {
 		const products = await ModelProduct.find({
 			subCategory: category,
 		}).select(["color", "-_id"]);
-		const cleanList = removeElemtnsRepeted(products);
+		const cleanList = removeElemtnsRepeted(products, "color");
 		res.send({ data: cleanList });
 	} catch (error) {
 		console.log(error);
@@ -38,12 +38,34 @@ const getColorsToFilter = async (req, res) => {
 				categories.map((el) => el.toLocaleUpperCase()),
 			)
 			.select(["color", "-_id"]);
-		const cleanList = removeElemtnsRepeted(products);
+		const cleanList = removeElemtnsRepeted(products, "color");
 		res.send({ data: cleanList });
 	} catch (error) {
 		console.log(error);
 	}
 };
+const getCategoriesToFilter = async (req, res) => {
+	try {
+		const products = await ModelProduct.find().select(["category", "-_id"]);
+		const cleanList = removeElemtnsRepeted(products, "category");
+		res.send({ data: cleanList });
+	} catch (error) {
+		console.log(error);
+	}
+};
+const getSubCategoriesToFilter = async (req, res) => {
+	try {
+		const products = await ModelProduct.find().select([
+			"subCategory",
+			"-_id",
+		]);
+		const cleanList = removeElemtnsRepeted(products, "subCategory");
+		res.send({ data: cleanList });
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const getImagesOfSubCategories = async (req, res) => {
 	const { subCategory, color } = req.body;
 	const query = {
@@ -127,18 +149,6 @@ const updateImagesSubCategory = async (req, res) => {
 	}
 };
 
-const deleteAllProducts = async (req, res) => {
-	try {
-		await ModelProduct.deleteMany()
-			.then((resp) => console.log({ eliminacionMsg: resp }))
-			.catch((err) => console.log(err));
-
-		res.send({ msg: "Elimincacion Exitosa" });
-	} catch (error) {
-		console.log(error);
-	}
-};
-
 const addVaroiusProducts = async (req, res) => {
 	const { body } = req;
 	const data = body;
@@ -172,9 +182,10 @@ module.exports = {
 	getProducts,
 	addProduct,
 	addVaroiusProducts,
-	deleteAllProducts,
 	getColorCategory,
 	getColorsToFilter,
+	getCategoriesToFilter,
+	getSubCategoriesToFilter,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
 	updateBachProducts,

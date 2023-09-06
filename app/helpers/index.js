@@ -1,11 +1,12 @@
-const removeElemtnsRepeted = (array) => {
+const removeElemtnsRepeted = (array, attribute) => {
 	const cleanList = [];
 	for (element of array) {
 		if (
-			!cleanList.includes(element.color) &&
-			element.color !== "sin datos"
+			element[attribute] &&
+			!cleanList.includes(element[attribute]) &&
+			element[attribute] !== "sin datos"
 		) {
-			cleanList.push(element.color);
+			cleanList.push(element[attribute]);
 		}
 	}
 	return cleanList;
