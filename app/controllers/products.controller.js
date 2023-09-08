@@ -29,37 +29,21 @@ const getColorCategory = async (req, res) => {
 		console.log(error);
 	}
 };
-const getColorsToFilter = async (req, res) => {
-	const { categories } = req.body;
+const getValuesAttributeSelects = async (req, res) => {
+	const { attribute, info } = req.body;
+	let products;
 	try {
-		const products = await ModelProduct.find()
-			.where(
-				"category",
-				categories.map((el) => el.toLocaleUpperCase()),
-			)
-			.select(["color", "-_id"]);
-		const cleanList = removeElemtnsRepeted(products, "color");
-		res.send({ data: cleanList });
-	} catch (error) {
-		console.log(error);
-	}
-};
-const getCategoriesToFilter = async (req, res) => {
-	try {
-		const products = await ModelProduct.find().select(["category", "-_id"]);
-		const cleanList = removeElemtnsRepeted(products, "category");
-		res.send({ data: cleanList });
-	} catch (error) {
-		console.log(error);
-	}
-};
-const getSubCategoriesToFilter = async (req, res) => {
-	try {
-		const products = await ModelProduct.find().select([
-			"subCategory",
-			"-_id",
-		]);
-		const cleanList = removeElemtnsRepeted(products, "subCategory");
+		if (info) {
+			products = await ModelProduct.find()
+				.where(
+					"category",
+					info.map((el) => el.toLocaleUpperCase()),
+				)
+				.select([attribute, "-_id"]);
+		} else {
+			products = await ModelProduct.find().select([attribute, "-_id"]);
+		}
+		const cleanList = removeElemtnsRepeted(products, attribute);
 		res.send({ data: cleanList });
 	} catch (error) {
 		console.log(error);
@@ -98,7 +82,6 @@ const updateBachProducts = async (req, res) => {
 					if (resp.acknowledged && resp.matchedCount >= 1) {
 						return 1;
 					} else {
-						console.log(index);
 						return 0;
 					}
 				})
@@ -161,7 +144,6 @@ const addVaroiusProducts = async (req, res) => {
 	}
 };
 const addProduct = async (req, res) => {
-	console.log(await ModelProduct.find());
 	const productsVarious = [
 		{ code: "359" },
 		{
@@ -183,12 +165,10 @@ module.exports = {
 	addProduct,
 	addVaroiusProducts,
 	getColorCategory,
-	getColorsToFilter,
-	getCategoriesToFilter,
-	getSubCategoriesToFilter,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
 	updateBachProducts,
+	getValuesAttributeSelects,
 };
 /* module.exports = addProduct;
  */
