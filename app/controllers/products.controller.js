@@ -1,3 +1,4 @@
+const { options } = require("nodemon/lib/config");
 const { removeElemtnsRepeted } = require("../helpers");
 const ModelProduct = require("../models/products.mode");
 
@@ -6,9 +7,9 @@ const getProducts = async (req, res) => {
 	/* 	  
 	const products = await ModelProduct.updateMany(
 		{
-			subCategory: "ALERON CHEVROLET S10 HIGH COUNTRY",
+			code: ["130FF", "056FF", "130RP", "948RP"],
 		},
-		{ vehiculo: "Aleron S10 High Country" },
+		{ mark: "Mitsubishi" },
 		);
 		*/
 	try {
@@ -17,13 +18,13 @@ const getProducts = async (req, res) => {
 		console.log(error);
 	}
 };
-const getColorCategory = async (req, res) => {
-	const { category } = req.body;
+const getOptionsToUpdateImages = async (req, res) => {
+	const { subCategory, attribute } = req.body;
 	try {
 		const products = await ModelProduct.find({
-			subCategory: category,
-		}).select(["color", "-_id"]);
-		const cleanList = removeElemtnsRepeted(products, "color");
+			subCategory: subCategory,
+		}).select([attribute, "-_id"]);
+		const cleanList = removeElemtnsRepeted(products, attribute);
 		res.send({ data: cleanList });
 	} catch (error) {
 		console.log(error);
@@ -51,14 +52,19 @@ const getValuesAttributeSelects = async (req, res) => {
 };
 
 const getImagesOfSubCategories = async (req, res) => {
-	const { subCategory, color } = req.body;
-	const query = {
+	const { subCategory, query } = req.body;
+	let finalQuery = {
 		subCategory: subCategory,
 	};
-	if (color) query.color = color;
+	if (query.color !== "" && query.color !== "all") {
+		finalQuery.color = query.color;
+	}
+	if (query.marca !== "" && query.marca !== "all") {
+		finalQuery.mark = query.marca;
+	}
 	try {
 		const products = await ModelProduct.findOne()
-			.where(query)
+			.where(finalQuery)
 			.select(["images", "-_id"]);
 		res.send({ data: products.images });
 	} catch (error) {
@@ -112,14 +118,16 @@ const updateBachProducts = async (req, res) => {
 };
 
 const updateImagesSubCategory = async (req, res) => {
-	const { subCategory, color, newImages } = req.body;
-	const query = {
+	const { subCategory, newImages, query } = req.body;
+	const finalQuery = {
 		subCategory: subCategory,
 	};
-	if (color) query.color = color;
-
+	if (query.color !== "" && query.color !== "all")
+		finalQuery.color = query.color;
+	if (query.marca !== "" && query.marca !== "all")
+		finalQuery.mark = query.marca;
 	try {
-		const respuesta = await ModelProduct.updateMany(query, {
+		const respuesta = await ModelProduct.updateMany(finalQuery, {
 			images: newImages,
 		});
 		if (respuesta.acknowledged == true) {
@@ -164,7 +172,7 @@ module.exports = {
 	getProducts,
 	addProduct,
 	addVaroiusProducts,
-	getColorCategory,
+	getOptionsToUpdateImages,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
 	updateBachProducts,

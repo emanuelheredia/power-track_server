@@ -4,7 +4,7 @@ const {
 	getProducts,
 	addProduct,
 	addVaroiusProducts,
-	getColorCategory,
+	getOptionsToUpdateImages,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
 	updateBachProducts,
@@ -16,7 +16,7 @@ router.get("/products", getProducts);
  */ router.post("/imagesOfSubcategory", getImagesOfSubCategories);
 router.post("/update-subCategoryImages", updateImagesSubCategory);
 router.post("/update-products", updateBachProducts);
-router.post("/color-category", getColorCategory);
+router.post("/options-update-image", getOptionsToUpdateImages);
 router.post("/values-attribute-select", getValuesAttributeSelects);
 
 exports.Router = router;

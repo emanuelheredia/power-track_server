@@ -9,6 +9,7 @@ const removeElemtnsRepeted = (array, attribute) => {
 			cleanList.push(element[attribute]);
 		}
 	}
-	return cleanList;
+
+	return cleanList.length > 1 ? cleanList : [];
 };
 module.exports = { removeElemtnsRepeted };
