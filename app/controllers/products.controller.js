@@ -2,6 +2,28 @@ const { options } = require("nodemon/lib/config");
 const { removeElemtnsRepeted } = require("../helpers");
 const ModelProduct = require("../models/products.mode");
 
+const deleteProducts = async (req, res) => {
+	const { id } = req.body;
+	try {
+		const respuesta = await ModelProduct.deleteOne({ _id: id });
+		if (respuesta.deletedCount === 1) {
+			res.status(200).json({
+				msg: "El producto se eliminó de forma permanente",
+			});
+			return;
+		}
+		if (respuesta.deletedCount === 0) {
+			res.status(402).json({
+				msg: "El producto ya se eliminó anteriormente, actualice la página para ver reflejado el cambio",
+			});
+			return;
+		}
+	} catch (error) {
+		res.status(404).json({
+			msg: "El no pudo eliminarse de la base de datos",
+		});
+	}
+};
 const getProducts = async (req, res) => {
 	const products = await ModelProduct.find();
 	/* 	  
@@ -52,15 +74,24 @@ const getValuesAttributeSelects = async (req, res) => {
 };
 
 const getImagesOfSubCategories = async (req, res) => {
-	const { subCategory, query } = req.body;
-	let finalQuery = {
-		subCategory: subCategory,
-	};
-	if (query.color !== "" && query.color !== "all") {
-		finalQuery.color = query.color;
-	}
-	if (query.marca !== "" && query.marca !== "all") {
-		finalQuery.mark = query.marca;
+	const { query } = req.body;
+	const { code, subCategory, color, marca } = query;
+	let finalQuery = {};
+	if (code) {
+		if (!(await ModelProduct.exists({ code: code }))) {
+			res.status(400).json({ msg: "El código ingresado no existe" });
+			return;
+		} else {
+			finalQuery.code = query.code;
+		}
+	} else {
+		finalQuery.subCategory = subCategory;
+		if (color !== "" && color !== "all") {
+			finalQuery.color = color;
+		}
+		if (marca !== "" && marca !== "all") {
+			finalQuery.mark = marca;
+		}
 	}
 	try {
 		const products = await ModelProduct.findOne()
@@ -118,14 +149,16 @@ const updateBachProducts = async (req, res) => {
 };
 
 const updateImagesSubCategory = async (req, res) => {
-	const { subCategory, newImages, query } = req.body;
-	const finalQuery = {
-		subCategory: subCategory,
-	};
-	if (query.color !== "" && query.color !== "all")
-		finalQuery.color = query.color;
-	if (query.marca !== "" && query.marca !== "all")
-		finalQuery.mark = query.marca;
+	const { newImages, query } = req.body;
+	const { color, code, subCategory, marca } = query;
+	let finalQuery = {};
+	if (code) {
+		finalQuery.code = code;
+	} else {
+		finalQuery.subCategory = subCategory;
+		if (color !== "" && color !== "all") finalQuery.color = color;
+		if (marca !== "" && marca !== "all") finalQuery.mark = marca;
+	}
 	try {
 		const respuesta = await ModelProduct.updateMany(finalQuery, {
 			images: newImages,
@@ -151,32 +184,31 @@ const addVaroiusProducts = async (req, res) => {
 		console.log(error);
 	}
 };
-const addProduct = async (req, res) => {
-	const productsVarious = [
-		{ code: "359" },
-		{
-			code: 69877,
-		},
-	];
-
+const addNewProduct = async (req, res) => {
+	const data = req.body;
 	try {
-		ModelProduct.insertMany(productsVarious)
-			.then((res) => console.log({ resp: res }))
-			.catch((err) => console.log({ error: err }));
-		res.send({ msg: "usuario agregado" });
+		if (await ModelProduct.exists({ code: data.code })) {
+			res.status(404).json({ msg: "El código ya existe" });
+			return;
+		}
+		const respuesta = await ModelProduct.insertMany(data);
+		res.send({ msg: "El producto se agregó de manera exitosa" });
 	} catch (error) {
-		console.log(error);
+		res.status(404).send({
+			msg: "El cargado del producto no fue exitoso",
+		});
 	}
 };
 module.exports = {
 	getProducts,
-	addProduct,
 	addVaroiusProducts,
 	getOptionsToUpdateImages,
 	getImagesOfSubCategories,
 	updateImagesSubCategory,
 	updateBachProducts,
 	getValuesAttributeSelects,
+	addNewProduct,
+	deleteProducts,
 };
 /* module.exports = addProduct;
  */

@@ -9,6 +9,8 @@ const {
 	updateImagesSubCategory,
 	updateBachProducts,
 	getValuesAttributeSelects,
+	addNewProduct,
+	deleteProducts,
 } = require("../controllers/products.controller.js");
 
 router.get("/products", getProducts);
@@ -18,5 +20,7 @@ router.post("/update-subCategoryImages", updateImagesSubCategory);
 router.post("/update-products", updateBachProducts);
 router.post("/options-update-image", getOptionsToUpdateImages);
 router.post("/values-attribute-select", getValuesAttributeSelects);
+router.post("/add-new-product", addNewProduct);
+router.delete("/products", deleteProducts);
 
 exports.Router = router;
