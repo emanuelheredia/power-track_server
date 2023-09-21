@@ -41,11 +41,12 @@ const getProducts = async (req, res) => {
 	}
 };
 const getOptionsToUpdateImages = async (req, res) => {
-	const { subCategory, attribute } = req.body;
+	const { query, attribute } = req.body;
 	try {
-		const products = await ModelProduct.find({
-			subCategory: subCategory,
-		}).select([attribute, "-_id"]);
+		const products = await ModelProduct.find(query).select([
+			attribute,
+			"-_id",
+		]);
 		const cleanList = removeElemtnsRepeted(products, attribute);
 		res.send({ data: cleanList });
 	} catch (error) {
@@ -75,7 +76,7 @@ const getValuesAttributeSelects = async (req, res) => {
 
 const getImagesOfSubCategories = async (req, res) => {
 	const { query } = req.body;
-	const { code, subCategory, color, marca } = query;
+	const { code, subCategory, color, marca, vehiculo } = query;
 	let finalQuery = {};
 	if (code) {
 		if (!(await ModelProduct.exists({ code: code }))) {
@@ -91,6 +92,9 @@ const getImagesOfSubCategories = async (req, res) => {
 		}
 		if (marca !== "" && marca !== "all") {
 			finalQuery.mark = marca;
+		}
+		if (vehiculo !== "" && vehiculo !== "all") {
+			finalQuery.vehiculo = vehiculo;
 		}
 	}
 	try {
@@ -150,7 +154,7 @@ const updateBachProducts = async (req, res) => {
 
 const updateImagesSubCategory = async (req, res) => {
 	const { newImages, query } = req.body;
-	const { color, code, subCategory, marca } = query;
+	const { color, code, subCategory, marca, vehiculo } = query;
 	let finalQuery = {};
 	if (code) {
 		finalQuery.code = code;
@@ -158,6 +162,8 @@ const updateImagesSubCategory = async (req, res) => {
 		finalQuery.subCategory = subCategory;
 		if (color !== "" && color !== "all") finalQuery.color = color;
 		if (marca !== "" && marca !== "all") finalQuery.mark = marca;
+		if (vehiculo !== "" && vehiculo !== "all")
+			finalQuery.vehiculo = vehiculo;
 	}
 	try {
 		const respuesta = await ModelProduct.updateMany(finalQuery, {
