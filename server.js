@@ -12,6 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use(express.urlencoded({ extended: false }));
 app.use(productsRouter.Router);
-app.listen(port, () => console.log("escuchando en puerto" + port));
+app.listen(port, () => console.log("escuchando en puerto " + port));
 
 initDB();
