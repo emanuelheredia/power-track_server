@@ -12,6 +12,11 @@ const {
 	addNewProduct,
 	deleteProducts,
 } = require("../controllers/products.controller.js");
+const {
+	addNewNews,
+	getAllNews,
+	deleteNews,
+} = require("../controllers/news.controller.js");
 
 router.get("/products", getProducts);
 /* router.post("/products", addVaroiusProducts);
@@ -21,6 +26,9 @@ router.post("/update-products", updateBachProducts);
 router.post("/options-update-image", getOptionsToUpdateImages);
 router.post("/values-attribute-select", getValuesAttributeSelects);
 router.post("/add-new-product", addNewProduct);
+router.post("/add-new-news", addNewNews);
+router.get("/get-all-news", getAllNews);
+router.delete("/news", deleteNews);
 router.delete("/products", deleteProducts);
 
 exports.Router = router;
