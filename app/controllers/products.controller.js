@@ -1,5 +1,5 @@
 const { options } = require("nodemon/lib/config");
-const { removeElemtnsRepeted } = require("../helpers");
+const { removeElemtnsRepeted, removeImagesRepeted } = require("../helpers");
 const ModelProduct = require("../models/products.mode");
 
 const deleteProducts = async (req, res) => {
@@ -76,7 +76,7 @@ const getValuesAttributeSelects = async (req, res) => {
 
 const getImagesOfSubCategories = async (req, res) => {
 	const { query } = req.body;
-	const { code, subCategory, color, marca, vehiculo } = query;
+	const { code, subCategory, color, marca, vehiculo, category } = query;
 	let finalQuery = {};
 	if (code) {
 		if (!(await ModelProduct.exists({ code: code }))) {
@@ -86,19 +86,25 @@ const getImagesOfSubCategories = async (req, res) => {
 			finalQuery.code = query.code;
 		}
 	} else {
-		finalQuery.subCategory = subCategory;
-		if (color !== "" && color !== "all") {
+		if (subCategory && subCategory !== "" && subCategory !== "all") {
+			finalQuery.subCategory = subCategory;
+		}
+		if (color && color !== "" && color !== "all") {
 			finalQuery.color = color;
 		}
-		if (marca !== "" && marca !== "all") {
+		if (marca && marca !== "" && marca !== "all") {
 			finalQuery.mark = marca;
 		}
-		if (vehiculo !== "" && vehiculo !== "all") {
+		if (vehiculo && vehiculo !== "" && vehiculo !== "all") {
 			finalQuery.vehiculo = vehiculo;
+		}
+		if (category && category !== "") {
+			finalQuery.category = category;
 		}
 	}
 	try {
-		const products = await ModelProduct.findOne()
+		let products = [];
+		products = await ModelProduct.findOne()
 			.where(finalQuery)
 			.select(["images", "-_id"]);
 		res.send({ data: products.images });

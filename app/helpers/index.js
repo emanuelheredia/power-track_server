@@ -12,4 +12,12 @@ const removeElemtnsRepeted = (array, attribute) => {
 
 	return cleanList.length > 1 ? cleanList : [];
 };
-module.exports = { removeElemtnsRepeted };
+
+const removeImagesRepeted = (array) => {
+	const cleanList = [];
+	for (element of array) {
+		if (!cleanList.includes(element.images)) cleanList.push(element.images);
+	}
+	return cleanList.length > 1 ? cleanList : [];
+};
+module.exports = { removeElemtnsRepeted, removeImagesRepeted };
