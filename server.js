@@ -4,6 +4,7 @@ const app = express();
 const port = 3001;
 const initDB = require("./config/db");
 const productsRouter = require("./app/routes/productos.router");
+const usersRouter = require("./app/routes/users.router");
 const cors = require("cors");
 app.use(cors());
 
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use(express.urlencoded({ extended: false }));
 app.use(productsRouter.Router);
+app.use(usersRouter.Router);
 app.listen(port, () => console.log("escuchando en puerto " + port));
 
 initDB();
