@@ -1,3 +1,7 @@
+const config = require("../config/config");
+const crypto = require("crypto-js");
+const cryptoJs = require("crypto-js");
+
 const removeElemtnsRepeted = (array, attribute) => {
 	const cleanList = [];
 	for (element of array) {
@@ -20,4 +24,13 @@ const removeImagesRepeted = (array) => {
 	}
 	return cleanList.length > 1 ? cleanList : [];
 };
-module.exports = { removeElemtnsRepeted, removeImagesRepeted };
+
+function desencriptarFront(string) {
+	const secretKey = config.acceso.secretKeyFront;
+	return crypto.AES.decrypt(string, secretKey).toString(cryptoJs.enc.Utf8);
+}
+module.exports = {
+	removeElemtnsRepeted,
+	removeImagesRepeted,
+	desencriptarFront,
+};
