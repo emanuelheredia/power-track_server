@@ -21,6 +21,7 @@ const {
 	addNewAccessorie,
 	getAccessoriesImages,
 	deleteImage,
+	getAccessoriesCategories,
 } = require("../controllers/accesories.controller.js");
 
 router.get("/products", getProducts);
@@ -38,5 +39,6 @@ router.delete("/products", deleteProducts);
 router.post("/add-new-accessorie-image", addNewAccessorie);
 router.post("/get-accessorie-images", getAccessoriesImages);
 router.delete("/accessorie-image", deleteImage);
+router.post("/get-accessories-categories", getAccessoriesCategories);
 
 exports.Router = router;

@@ -1,4 +1,4 @@
-const { removeImagesRepeted } = require("../helpers");
+const { removeImagesRepeted, removeElemtnsRepeted } = require("../helpers");
 const AccesorieModel = require("../models/accessories.model");
 
 const addNewAccessorie = async (req, res) => {
@@ -45,8 +45,22 @@ const deleteImage = async (req, res) => {
 		});
 	}
 };
+const getAccessoriesCategories = async (req, res) => {
+	const { model } = req.body;
+	try {
+		const products = await AccesorieModel.find()
+			.where("model", [model])
+			.select("category");
+
+		const categories = removeElemtnsRepeted(products, "category");
+		res.send(categories);
+	} catch (error) {
+		console.log(error);
+	}
+};
 module.exports = {
 	addNewAccessorie,
 	getAccessoriesImages,
 	deleteImage,
+	getAccessoriesCategories,
 };
