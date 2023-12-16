@@ -13,12 +13,26 @@ const addNewAccessorie = async (req, res) => {
 	}
 };
 const getAccessoriesImages = async (req, res) => {
-	const { model } = req.body;
+	const { model, category } = req.body;
 	try {
 		const products = await AccesorieModel.find()
-			.where("model", [model])
+			.where({ model: model, superCategory: category })
 			.select(["images", "category", "public_id", "_id"]);
 		res.send({ data: products });
+	} catch (error) {
+		console.log(error);
+	}
+};
+const updateAccessoriesImages = async (req, res) => {
+	try {
+		const products = await AccesorieModel.find().updateMany(
+			{
+				category: "BOLSO D",
+			},
+			{ superCategory: "BOLSO" },
+		);
+		console.log("DESDE CONTROLLER");
+		console.log(products);
 	} catch (error) {
 		console.log(error);
 	}
@@ -50,9 +64,9 @@ const getAccessoriesCategories = async (req, res) => {
 	try {
 		const products = await AccesorieModel.find()
 			.where("model", [model])
-			.select("category");
+			.select("superCategory");
 
-		const categories = removeElemtnsRepeted(products, "category");
+		const categories = removeElemtnsRepeted(products, "superCategory");
 		res.send(categories);
 	} catch (error) {
 		console.log(error);
@@ -63,4 +77,5 @@ module.exports = {
 	getAccessoriesImages,
 	deleteImage,
 	getAccessoriesCategories,
+	updateAccessoriesImages,
 };

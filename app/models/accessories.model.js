@@ -4,6 +4,7 @@ const accesoriesSchema = new Schema(
 	{
 		model: String,
 		category: String,
+		superCategory: String,
 		images: String,
 		public_id: String,
 	},
