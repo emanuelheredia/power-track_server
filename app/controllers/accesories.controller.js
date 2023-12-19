@@ -5,6 +5,7 @@ const addNewAccessorie = async (req, res) => {
 	const data = req.body;
 	try {
 		const respuesta = await AccesorieModel.insertMany(data);
+		console.log(respuesta);
 		res.send({ data: respuesta, msg: "La imágen se agregó con éxito" });
 	} catch (error) {
 		res.status(404).send({

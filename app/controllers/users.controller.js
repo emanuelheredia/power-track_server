@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 const addNewUser = async (req, res) => {
 	const data = req.body;
 	try {
-		if (await ModelUsers.exists({ email: data.email })) {
-			res.status(203).json({ msg: "El email ya existe" });
+		if (await ModelUsers.exists({ idCliente: data.idCliente })) {
+			res.status(203).json({
+				msg: "El número de cliente ya está registrado",
+			});
 			return;
 		}
 		const respuesta = await ModelUsers.insertMany(data);
@@ -18,14 +20,19 @@ const addNewUser = async (req, res) => {
 	}
 };
 const signInUser = async (req, res) => {
-	const { email, password } = req.body;
+	const { userID, password } = req.body;
 	try {
-		if (!(await ModelUsers.exists({ email: email }))) {
-			res.status(203).json({ msg: "El email no está registrado" });
+		if (!(await ModelUsers.exists({ idCliente: userID }))) {
+			res.status(203).json({
+				msg: "El numero de cliente no está registrado",
+			});
 			return;
 		}
 		const user = (
-			await ModelUsers.find({ email: email }).select(["password", "name"])
+			await ModelUsers.find({ idCliente: userID }).select([
+				"password",
+				"name",
+			])
 		)[0];
 		if (desencriptarFront(password) !== desencriptarFront(user.password)) {
 			res.status(203).json({ msg: "Password incorrecto" });
@@ -33,7 +40,7 @@ const signInUser = async (req, res) => {
 		}
 		const token = jwt.sign(
 			{
-				email: email,
+				idCliente: userID,
 			},
 			"MY_SECRET",
 			{
