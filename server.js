@@ -19,6 +19,9 @@ app.use(productsRouter.Router);
 app.use(usersRouter.Router);
 app.listen(port, () => {
 	console.log("escuchando en puerto " + port);
+	/*
+	updateAccessoriesImages();
+	 */
 });
 
 initDB();

@@ -24,7 +24,7 @@ const addNewNews = async (req, res) => {
 			return;
 		}
 		const respuesta = await ModelNews.insertMany(data);
-		res.send({ msg: respuesta });
+		res.send({ msg: "La novedad se agregó con exito" });
 	} catch (error) {
 		res.status(404).send({
 			msg: "El cargado del producto no fue exitoso",

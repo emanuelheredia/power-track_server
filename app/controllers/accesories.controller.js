@@ -5,7 +5,6 @@ const addNewAccessorie = async (req, res) => {
 	const data = req.body;
 	try {
 		const respuesta = await AccesorieModel.insertMany(data);
-		console.log(respuesta);
 		res.send({ data: respuesta, msg: "La imágen se agregó con éxito" });
 	} catch (error) {
 		res.status(404).send({
@@ -18,7 +17,7 @@ const getAccessoriesImages = async (req, res) => {
 	try {
 		const products = await AccesorieModel.find()
 			.where({ model: model, superCategory: category })
-			.select(["images", "category", "public_id", "_id"]);
+			.select(["images", "category", "proveedor", "public_id", "_id"]);
 		res.send({ data: products });
 	} catch (error) {
 		console.log(error);
@@ -28,11 +27,11 @@ const updateAccessoriesImages = async (req, res) => {
 	try {
 		const products = await AccesorieModel.find().updateMany(
 			{
-				category: "BOLSO D",
+				category: "ESTRIBOS INYECTADOS",
 			},
-			{ superCategory: "BOLSO" },
+			{ proveedor: "BEPO" },
 		);
-		console.log("DESDE CONTROLLER");
+		console.log("ACTUALICÉ", products);
 		console.log(products);
 	} catch (error) {
 		console.log(error);
