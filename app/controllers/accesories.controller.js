@@ -13,12 +13,24 @@ const addNewAccessorie = async (req, res) => {
 	}
 };
 const getAccessoriesImages = async (req, res) => {
-	const { model, category } = req.body;
+	const { query, limit } = req.body;
 	try {
 		const products = await AccesorieModel.find()
-			.where({ model: model, superCategory: category })
-			.select(["images", "category", "proveedor", "public_id", "_id"]);
+			.where(query)
+			.select(["images", "category", "proveedor", "public_id", "_id"])
+			.limit(limit);
 		res.send({ data: products });
+	} catch (error) {
+		console.log(error);
+	}
+};
+const getAccessoriesAttribute = async (req, res) => {
+	const { query, attributes } = req.body;
+	try {
+		const products = await AccesorieModel.find()
+			.where(query)
+			.select(attributes);
+		res.send({ data: removeElemtnsRepeted(products, "category") });
 	} catch (error) {
 		console.log(error);
 	}
@@ -27,9 +39,9 @@ const updateAccessoriesImages = async (req, res) => {
 	try {
 		const products = await AccesorieModel.find().updateMany(
 			{
-				category: "ESTRIBOS INYECTADOS",
+				category: "ESTRIBO OBAL",
 			},
-			{ proveedor: "BEPO" },
+			{ category: "ESTRIBO OVAL" },
 		);
 		console.log("ACTUALICÉ", products);
 		console.log(products);
@@ -78,4 +90,5 @@ module.exports = {
 	deleteImage,
 	getAccessoriesCategories,
 	updateAccessoriesImages,
+	getAccessoriesAttribute,
 };
