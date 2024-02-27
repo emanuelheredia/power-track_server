@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 const initDB = require("./config/db");
 const productsRouter = require("./app/routes/productos.router");
 const usersRouter = require("./app/routes/users.router");
@@ -17,7 +17,7 @@ app.use(bodyParser.raw());
 app.use(express.urlencoded({ extended: false }));
 app.use(productsRouter.Router);
 app.use(usersRouter.Router);
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
 	console.log("escuchando en puerto " + port);
 	/*
 	updateAccessoriesImages();
